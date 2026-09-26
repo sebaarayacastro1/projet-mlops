@@ -1,5 +1,20 @@
+# Ignorer les données générées par les scripts (reproductibilité)
+data/processed/
+data/interim/
+
+# Ignorer les modèles entraînés et les artefacts
+models/
+
+# Environnements virtuels Python
 venv/
-mlruns/
+.venv/
+env/
+
+# Cache Python et Jupyter Notebooks
 __pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Fichiers de configuration du système / éditeur
 .DS_Store
-.env
+.vscode/
