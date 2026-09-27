@@ -18,3 +18,7 @@ __pycache__/
 # Fichiers de configuration du système / éditeur
 .DS_Store
 .vscode/
+
+# MLflow tracking
+mlflow.db
+mlruns/
