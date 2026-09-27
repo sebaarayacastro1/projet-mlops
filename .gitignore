@@ -3,7 +3,7 @@ data/processed/
 data/interim/
 
 # Ignorer les modèles entraînés et les artefacts
-models/
+/models/
 
 # Environnements virtuels Python
 venv/
@@ -18,3 +18,7 @@ __pycache__/
 # Fichiers de configuration du système / éditeur
 .DS_Store
 .vscode/
+
+# MLflow tracking
+mlflow.db
+mlruns/
