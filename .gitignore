@@ -3,7 +3,7 @@ data/processed/
 data/interim/
 
 # Ignorer les modèles entraînés et les artefacts
-models/
+/models/
 
 # Environnements virtuels Python
 venv/
