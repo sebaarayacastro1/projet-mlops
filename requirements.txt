@@ -1,10 +1,13 @@
 pandas
 numpy
 scikit-learn
-pytest
+joblib
+pydantic
 python-dotenv
 mlflow
 fastapi
 uvicorn
+streamlit
+requests
 pytest
 pytest-cov
