@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  # Service 1 : L'API principale (FastAPI)
+  api_modele:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+
+  # Service 2 : L'interface graphique (Streamlit)
+  interface_utilisateur:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api_modele  # S'assure que l'API démarre en premier

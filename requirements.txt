@@ -11,5 +11,4 @@ streamlit
 requests
 pytest
 pytest-cov
-os
 typing
