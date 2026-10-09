@@ -12,3 +12,5 @@ requests
 pytest
 pytest-cov
 typing
+httpx
+httpx2
