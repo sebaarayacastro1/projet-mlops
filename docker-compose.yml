@@ -16,5 +16,7 @@ services:
       dockerfile: Dockerfile.streamlit
     ports:
       - "8501:8501"
+    environment:
+          - API_URL=http://api_modele:8000/predict
     depends_on:
       - api_modele  # S'assure que l'API démarre en premier
