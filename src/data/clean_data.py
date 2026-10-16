@@ -37,8 +37,12 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df_clean["TotalCharges"] = df_clean["TotalCharges"].fillna(0.0)
 
     # 4. Convertir la variable cible 'Churn' au format binaire (1 et 0)
-    if "Churn" in df_clean.columns and df_clean["Churn"].dtype == "object":
-        df_clean["Churn"] = df_clean["Churn"].map({"Yes": 1, "No": 0})
+    if "Churn" in df_clean.columns and not pd.api.types.is_numeric_dtype(
+        df_clean["Churn"]
+    ):
+        df_clean["Churn"] = (
+            df_clean["Churn"].str.strip().map({"Yes": 1, "No": 0})
+        )
 
     return df_clean
 
