@@ -28,7 +28,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Exécuter les tests unitaires avec pytest et rapport de couverture
+      # 4. Générer les données traitées et le modèle (nécessaires aux tests)
+      - name: Préparer les données et entraîner le modèle
+        run: |
+          python -m src.data.clean_data
+          python -m src.features.build_features
+          python -m src.models.train
+
+      # 5. Exécuter les tests unitaires avec pytest et rapport de couverture
       - name: Exécuter les tests unitaires
         run: |
           pytest -v --cov=src
