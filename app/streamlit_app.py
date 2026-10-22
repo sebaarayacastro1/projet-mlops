@@ -37,7 +37,6 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Client")
-    gender = st.selectbox("Sexe", ["Female", "Male"], format_func=fmt)
     senior = st.selectbox("Senior / Personne âgée", [0, 1], format_func=lambda x: "Oui" if x else "Non")
     partner = st.selectbox("En couple", YES_NO, format_func=fmt)
     dependents = st.selectbox("Personnes à charge", YES_NO, format_func=fmt)
@@ -52,12 +51,9 @@ with col1:
         format_func=fmt,
     )
     monthly = st.number_input("Frais mensuels (€)", 0.0, 200.0, 70.0, step=0.5)
-    total = st.number_input("Frais totaux (€)", 0.0, 10000.0, float(tenure * monthly), step=1.0)
 
 with col2:
     st.subheader("Services")
-    phone = st.selectbox("Service téléphonique", YES_NO, format_func=fmt)
-    multiple = st.selectbox("Lignes multiples", ["No", "Yes", "No phone service"], format_func=fmt)
     internet = st.selectbox("Service Internet", ["DSL", "Fiber optic", "No"], format_func=fmt)
     online_sec = st.selectbox("Sécurité en ligne", INTERNET_EXTRA, format_func=fmt)
     online_bkp = st.selectbox("Sauvegarde en ligne", INTERNET_EXTRA, format_func=fmt)
@@ -69,13 +65,10 @@ with col2:
 if st.button("Prédire", type="primary"):
     # Le payload conserve les clés et valeurs exactes en anglais requises par l'API
     payload = {
-        "gender": gender,
         "SeniorCitizen": senior,
         "Partner": partner,
         "Dependents": dependents,
         "tenure": tenure,
-        "PhoneService": phone,
-        "MultipleLines": multiple,
         "InternetService": internet,
         "OnlineSecurity": online_sec,
         "OnlineBackup": online_bkp,
@@ -87,7 +80,6 @@ if st.button("Prédire", type="primary"):
         "PaperlessBilling": paperless,
         "PaymentMethod": payment,
         "MonthlyCharges": monthly,
-        "TotalCharges": total,
     }
     try:
         r = requests.post(API_URL, json=payload, timeout=10)

@@ -35,7 +35,23 @@ pip install -r requirements.txt
 ```
 *(Dépendances principales : fastapi, uvicorn, pydantic, streamlit, requests, httpx)*
 
-#### 2. Lancer l'API (FastAPI)
+#### 2. Exécuter le Pipeline de MLOps (Entraînement et Tests)
+Si vous effectuez des modifications et souhaitez relancer l'entraînement complet (nettoyage, features, modèle) ainsi que les tests unitaires et de l'API, vous pouvez exécuter le script d'orchestration :
+
+```bash
+python src/pipelines/run_pipeline.py
+```
+*(Alternativement, vous pouvez lancer les tests seuls avec `pytest -v`)*
+
+#### 3. Accéder à MLflow (Suivi des expériences)
+Pour visualiser les métriques (comme l'AUC), les paramètres et l'historique de vos entraînements :
+
+```bash
+mlflow ui
+```
+Ouvrez ensuite votre navigateur et accédez à l'adresse : **http://localhost:5000**
+
+#### 4. Lancer l'API (FastAPI)
 Démarrez le serveur de l'API en mode développement avec Uvicorn :
 
 ```bash
@@ -43,7 +59,7 @@ uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 L'API sera accessible sur http://localhost:8000 et la documentation interactive (Swagger) sur http://localhost:8000/docs.
 
-#### 3. Lancer l'Interface (Streamlit)
+#### 5. Lancer l'Interface (Streamlit)
 Dans un autre terminal, lancez l'application Streamlit :
 
 ```bash
