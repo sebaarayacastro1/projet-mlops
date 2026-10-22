@@ -10,14 +10,9 @@ PROCESSED_DATA_PATH = PROJECT_ROOT / "data" / "processed" / "churn_cleaned.csv"
 PREPROCESSOR_PATH = PROJECT_ROOT / "models" / "preprocessor.joblib"
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 
-VARIABLES_NUMERIQUES = ['tenure', 'MonthlyCharges', 
-                        #'TotalCharges'
-                        ]
+VARIABLES_NUMERIQUES = ['tenure', 'MonthlyCharges']
 VARIABLES_CATEGORIELLES = [
-                            #'gender', 
                             'Partner', 'Dependents', 
-                            #'PhoneService',
-                            #'MultipleLines',
                             'InternetService', 'OnlineSecurity',
                             'OnlineBackup', 'DeviceProtection', 'TechSupport',
                             'StreamingTV', 'StreamingMovies', 'Contract',
