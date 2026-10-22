@@ -18,13 +18,10 @@ THRESHOLD = 0.5
 
 
 class Customer(BaseModel):
-    #gender: Literal["Female", "Male"]
     SeniorCitizen: Literal[0, 1]
     Partner: YesNo
     Dependents: YesNo
     tenure: int = Field(ge=0, le=72)
-    #PhoneService: YesNo
-    #MultipleLines: Literal["Yes", "No", "No phone service"]
     InternetService: Literal["DSL", "Fiber optic", "No"]
     OnlineSecurity: InternetExtra
     OnlineBackup: InternetExtra
@@ -41,7 +38,6 @@ class Customer(BaseModel):
         "Credit card (automatic)",
     ]
     MonthlyCharges: float = Field(ge=0)
-    #TotalCharges: float = Field(ge=0)
 
 
 @app.get("/health")
