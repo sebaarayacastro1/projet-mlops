@@ -12,7 +12,7 @@ PREPROCESSOR_PATH = PROJECT_ROOT / "models" / "preprocessor.joblib"
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 
 VARIABLES_NUMERIQUES = ['tenure', 'MonthlyCharges', 'Security_Index', 'Streaming_Pack']
-VARIABLES_CATEGORIELLES = [
+VARIABLES_CATEGORIELLES = ['SeniorCitizen',
                             'Partner', 'Dependents',
                             'InternetService', 'Contract',
                             'PaperlessBilling', 'PaymentMethod']
