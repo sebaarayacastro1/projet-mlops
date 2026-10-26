@@ -2,6 +2,9 @@ from fastapi.testclient import TestClient
 
 from api.main import app
 
+from api.main import Customer
+from src.features.build_features import VARIABLES_CATEGORIELLES, VARIABLES_NUMERIQUES
+
 client = TestClient(app)
 
 VALID = {
@@ -59,3 +62,11 @@ def test_predict_indices_without_internet_rejected():
 def test_predict_without_internet_with_zero_indices():
     payload = {**VALID, "InternetService": "No", "Security_Index": 0, "Streaming_Pack": 0}
     assert client.post("/predict", json=payload).status_code == 200
+
+def test_champs_api_et_variables_du_modele_sont_identiques():
+    champs_api = set(Customer.model_fields)
+    variables_modele = set(VARIABLES_NUMERIQUES + VARIABLES_CATEGORIELLES)
+    assert champs_api == variables_modele, (
+        f"Champs de l'API non utilisés par le modèle : {champs_api - variables_modele} | "
+        f"Variables du modèle absentes de l'API : {variables_modele - champs_api}"
+    )
