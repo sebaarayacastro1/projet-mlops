@@ -2,13 +2,16 @@ from fastapi.testclient import TestClient
 
 from api.main import app
 
+from api.main import Customer
+from src.features.build_features import VARIABLES_CATEGORIELLES, VARIABLES_NUMERIQUES
+
 client = TestClient(app)
 
 VALID = {
     "SeniorCitizen": 0, "Partner": "Yes", "Dependents": "No",
-    "tenure": 1,     "InternetService": "DSL", "OnlineSecurity": "No", 
-    "OnlineBackup": "Yes",    "DeviceProtection": "No", "TechSupport": "No", 
-    "StreamingTV": "No", "StreamingMovies": "No", "Contract": "Month-to-month",
+    "tenure": 1, "InternetService": "DSL",
+    "Security_Index": 1, "Streaming_Pack": 0,
+    "Contract": "Month-to-month",
     "PaperlessBilling": "Yes", "PaymentMethod": "Electronic check",
     "MonthlyCharges": 29.85
 }
@@ -34,3 +37,36 @@ def test_predict_invalid_category():
 def test_predict_missing_field():
     payload = {k: v for k, v in VALID.items() if k != "tenure"}
     assert client.post("/predict", json=payload).status_code == 422
+
+
+def test_predict_missing_index():
+    payload = {k: v for k, v in VALID.items() if k != "Security_Index"}
+    assert client.post("/predict", json=payload).status_code == 422
+
+
+def test_predict_security_index_out_of_range():
+    r = client.post("/predict", json={**VALID, "Security_Index": 5})
+    assert r.status_code == 422
+
+
+def test_predict_streaming_pack_out_of_range():
+    r = client.post("/predict", json={**VALID, "Streaming_Pack": 3})
+    assert r.status_code == 422
+
+
+def test_predict_indices_without_internet_rejected():
+    payload = {**VALID, "InternetService": "No", "Security_Index": 2}
+    assert client.post("/predict", json=payload).status_code == 422
+
+
+def test_predict_without_internet_with_zero_indices():
+    payload = {**VALID, "InternetService": "No", "Security_Index": 0, "Streaming_Pack": 0}
+    assert client.post("/predict", json=payload).status_code == 200
+
+def test_champs_api_et_variables_du_modele_sont_identiques():
+    champs_api = set(Customer.model_fields)
+    variables_modele = set(VARIABLES_NUMERIQUES + VARIABLES_CATEGORIELLES)
+    assert champs_api == variables_modele, (
+        f"Champs de l'API non utilisés par le modèle : {champs_api - variables_modele} | "
+        f"Variables du modèle absentes de l'API : {variables_modele - champs_api}"
+    )
