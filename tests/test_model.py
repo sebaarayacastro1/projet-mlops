@@ -19,15 +19,11 @@ def modele_entraine():
 def echantillon_valide():
     """Un seul client au format attendu par le pipeline (avant préprocessing)."""
     return pd.DataFrame({
-        "gender": ["Female"], "SeniorCitizen": [0], "Partner": ["Yes"],
-        "Dependents": ["No"], "tenure": [12], "PhoneService": ["Yes"],
-        "MultipleLines": ["No"], "InternetService": ["DSL"],
-        "OnlineSecurity": ["Yes"], "OnlineBackup": ["No"],
-        "DeviceProtection": ["No"], "TechSupport": ["No"],
-        "StreamingTV": ["No"], "StreamingMovies": ["No"],
+        "SeniorCitizen": [0], "Partner": ["Yes"], "Dependents": ["No"],
+        "tenure": [12], "InternetService": ["DSL"],
+        "Security_Index": [1], "Streaming_Pack": [0],
         "Contract": ["Month-to-month"], "PaperlessBilling": ["Yes"],
         "PaymentMethod": ["Electronic check"], "MonthlyCharges": [55.5],
-        "TotalCharges": [666.0],
     })
 
 

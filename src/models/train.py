@@ -27,7 +27,6 @@ MODEL_PATH = PROJECT_ROOT / "models" / "model.joblib"
 
 NOM_EXPERIENCE = "churn_prediction"
 
-
 def charger_donnees():
     """Charge les ensembles d'entraînement/test et le préprocesseur déjà entraînés (Phase 2)."""
     X_train = pd.read_csv(PROCESSED_DIR / "X_train.csv")
@@ -85,11 +84,13 @@ def entrainer_et_logger(
 
         # Paramètres et métriques
         mlflow.log_param("model_type", nom_modele)
+        mlflow.log_param("jeu_de_variables", "scenario_C")
         mlflow.log_params(classifieur.get_params())
         mlflow.log_metric("roc_auc", auc)
         mlflow.log_metric("precision", precision)
         mlflow.log_metric("recall", rappel)
         mlflow.log_metric("f1_score", f1)
+
 
         # Matrice de confusion en tant qu'artefact visuel
         fig, ax = plt.subplots(figsize=(5, 4))

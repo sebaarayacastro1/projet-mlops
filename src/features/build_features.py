@@ -4,18 +4,17 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from src.features.regroupement import regrouper_services
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 PROCESSED_DATA_PATH = PROJECT_ROOT / "data" / "processed" / "churn_cleaned.csv"
 PREPROCESSOR_PATH = PROJECT_ROOT / "models" / "preprocessor.joblib"
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 
-VARIABLES_NUMERIQUES = ['tenure', 'MonthlyCharges']
+VARIABLES_NUMERIQUES = ['tenure', 'MonthlyCharges', 'Security_Index', 'Streaming_Pack']
 VARIABLES_CATEGORIELLES = [
-                            'Partner', 'Dependents', 
-                            'InternetService', 'OnlineSecurity',
-                            'OnlineBackup', 'DeviceProtection', 'TechSupport',
-                            'StreamingTV', 'StreamingMovies', 'Contract',
+                            'Partner', 'Dependents',
+                            'InternetService', 'Contract',
                             'PaperlessBilling', 'PaymentMethod']
 
 
@@ -36,6 +35,7 @@ def build_preprocessor() -> ColumnTransformer:
 
 def main():
     df = pd.read_csv(PROCESSED_DATA_PATH)
+    df = regrouper_services(df)  # Security_Index et Streaming_Pack remplacent les 6 services
     X_train, X_test, y_train, y_test = split_data(df)
 
     preprocessor = build_preprocessor()

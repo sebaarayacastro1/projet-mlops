@@ -6,7 +6,15 @@ API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/predict")
 
 # Valeurs réelles attendues par le modèle (en anglais)
 YES_NO = ["Yes", "No"]
-INTERNET_EXTRA = ["No", "Yes", "No internet service"]
+# Services regroupés en deux indices (doivent correspondre aux bornes de l'API :
+# Security_Index de 0 à 4 et Streaming_Pack de 0 à 2)
+SERVICES_SECURITE = [
+    "Sécurité en ligne", "Sauvegarde en ligne",
+    "Protection de l'équipement", "Assistance technique",
+]
+SERVICES_STREAMING = ["Streaming TV", "Streaming films"]
+MAX_SECURITY_INDEX = len(SERVICES_SECURITE)
+MAX_STREAMING_PACK = len(SERVICES_STREAMING)
 
 # Dictionnaire de traduction pour l'interface visuelle
 TRADUCTION = {
@@ -55,12 +63,21 @@ with col1:
 with col2:
     st.subheader("Services")
     internet = st.selectbox("Service Internet", ["DSL", "Fiber optic", "No"], format_func=fmt)
-    online_sec = st.selectbox("Sécurité en ligne", INTERNET_EXTRA, format_func=fmt)
-    online_bkp = st.selectbox("Sauvegarde en ligne", INTERNET_EXTRA, format_func=fmt)
-    device = st.selectbox("Protection de l'équipement", INTERNET_EXTRA, format_func=fmt)
-    tech = st.selectbox("Assistance technique", INTERNET_EXTRA, format_func=fmt)
-    stream_tv = st.selectbox("Streaming TV", INTERNET_EXTRA, format_func=fmt)
-    stream_mov = st.selectbox("Streaming films", INTERNET_EXTRA, format_func=fmt)
+    sans_internet = internet == "No"
+
+    security_index = st.number_input(
+        f"Services de sécurité souscrits (0 à {MAX_SECURITY_INDEX})",
+        min_value=0, max_value=MAX_SECURITY_INDEX, value=0, step=1,
+        disabled=sans_internet,
+    )
+    st.caption("Compte parmi : " + ", ".join(SERVICES_SECURITE))
+
+    streaming_pack = st.number_input(
+        f"Services de streaming souscrits (0 à {MAX_STREAMING_PACK})",
+        min_value=0, max_value=MAX_STREAMING_PACK, value=0, step=1,
+        disabled=sans_internet,
+    )
+    st.caption("Compte parmi : " + ", ".join(SERVICES_STREAMING))
 
 if st.button("Prédire", type="primary"):
     # Le payload conserve les clés et valeurs exactes en anglais requises par l'API
@@ -70,12 +87,9 @@ if st.button("Prédire", type="primary"):
         "Dependents": dependents,
         "tenure": tenure,
         "InternetService": internet,
-        "OnlineSecurity": online_sec,
-        "OnlineBackup": online_bkp,
-        "DeviceProtection": device,
-        "TechSupport": tech,
-        "StreamingTV": stream_tv,
-        "StreamingMovies": stream_mov,
+        # Un widget désactivé conserve sa valeur : on force 0 si le client n'a pas Internet
+        "Security_Index": 0 if sans_internet else int(security_index),
+        "Streaming_Pack": 0 if sans_internet else int(streaming_pack),
         "Contract": contract,
         "PaperlessBilling": paperless,
         "PaymentMethod": payment,
