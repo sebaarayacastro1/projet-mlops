@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import joblib
+import os
 import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel, Field, model_validator
@@ -15,7 +16,12 @@ model = joblib.load(ROOT / "models" / "model.joblib")
 app = FastAPI(title="Telco Churn API")
 YesNo = Literal["Yes", "No"]
 
-THRESHOLD = 0.5
+THRESHOLD = float(os.getenv("CHURN_THRESHOLD", "0.5"))
+
+if not 0.0 <= THRESHOLD <= 1.0:
+    raise ValueError(
+        "CHURN_THRESHOLD doit être compris entre 0 et 1."
+    )
 
 
 class Customer(BaseModel):

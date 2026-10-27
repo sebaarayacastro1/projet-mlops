@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+    environment:
+      CHURN_THRESHOLD: ${CHURN_THRESHOLD:-0.5}
 
   # Service 2 : L'interface graphique (Streamlit)
   interface_utilisateur:
