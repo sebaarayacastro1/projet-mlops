@@ -1,17 +1,20 @@
-# 1. Utiliser la même image de base Python que l'API
+# Image Python
 FROM python:3.11-slim
 
-# 2. Définir le répertoire de travail
+# Répertoire de travail
 WORKDIR /app
 
-# 3. Installer les dépendances
-RUN pip install --no-cache-dir streamlit==1.65.0 requests==2.34.2
+# Copier les dépendances de Streamlit
+COPY requirements.streamlit.txt .
 
-# 4. Copier l'ensemble du code
-COPY . .
+# Installer les dépendances
+RUN python -m pip install --no-cache-dir -r requirements.streamlit.txt
 
-# 5. Exposer le port par défaut de Streamlit
+# Copier uniquement l'application Streamlit
+COPY app/ ./app/
+
+# Port de Streamlit
 EXPOSE 8501
 
-# 6. Commande pour démarrer l'interface utilisateur
-CMD ["streamlit", "run", "app/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Démarrer l'interface
+CMD ["python", "-m", "streamlit", "run", "app/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
