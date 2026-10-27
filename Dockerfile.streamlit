@@ -5,8 +5,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # 3. Installer les dépendances
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir streamlit==1.65.0 requests==2.34.2
 
 # 4. Copier l'ensemble du code
 COPY . .
