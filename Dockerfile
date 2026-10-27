@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # 4. Copier l'ensemble du code source du projet dans le conteneur
 COPY . .
+RUN python -m src.data.clean_data && python -m src.features.build_features && python -m src.models.train
 
 # 5. Exposer le port sur lequel s'exécute l'API FastAPI
 EXPOSE 8000
