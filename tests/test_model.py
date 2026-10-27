@@ -10,10 +10,13 @@ MODEL_PATH = PROJECT_ROOT / "models" / "model.joblib"
 
 @pytest.fixture(scope="module")
 def modele_entraine():
-    if not MODEL_PATH.exists():
-        pytest.skip("model.joblib introuvable — exécutez d'abord src/models/train.py")
+    if not MODEL_PATH.is_file():
+        pytest.fail(
+            "model.joblib introuvable — exécutez "
+            "python -m src.pipelines.run_pipeline "
+            "ou entraînez le modèle avant les tests."
+        )
     return joblib.load(MODEL_PATH)
-
 
 @pytest.fixture
 def echantillon_valide():
