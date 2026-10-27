@@ -99,12 +99,23 @@ if st.button("Prédire", type="primary"):
         r = requests.post(API_URL, json=payload, timeout=10)
         r.raise_for_status()
         result = r.json()
+        
         prob = result["churn_probability"]
-        st.metric("Probabilité de churn", f"{prob:.1%}")
+
+        # Affichage sous forme de score de risque non calibré
+        st.metric("Score de risque de churn", f"{prob * 100:.1f} / 100")
         st.progress(prob)
+
+        st.caption(
+            "Ce score indique le niveau de risque de résiliation "
+            "estimé par le modèle. Il ne représente pas une "
+            "probabilité réelle calibrée."
+        )
+
         if result["churn"]:
             st.error("Risque élevé : le client risque de résilier.")
         else:
             st.success("Risque faible : le client devrait rester.")
+
     except requests.RequestException as e:
         st.error(f"Impossible de contacter l'API : {e}")
