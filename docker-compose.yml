@@ -1,0 +1,23 @@
+
+services:
+  # Service 1 : L'API principale (FastAPI)
+  api_modele:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      CHURN_THRESHOLD: ${CHURN_THRESHOLD:-0.5}
+
+  # Service 2 : L'interface graphique (Streamlit)
+  interface_utilisateur:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+    ports:
+      - "8501:8501"
+    environment:
+          - API_URL=http://api_modele:8000/predict
+    depends_on:
+      - api_modele  # S'assure que l'API démarre en premier

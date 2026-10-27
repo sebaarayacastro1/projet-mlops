@@ -1,0 +1,20 @@
+# Image Python
+FROM python:3.11-slim
+
+# Répertoire de travail
+WORKDIR /app
+
+# Copier les dépendances de Streamlit
+COPY requirements.streamlit.txt .
+
+# Installer les dépendances
+RUN python -m pip install --no-cache-dir -r requirements.streamlit.txt
+
+# Copier uniquement l'application Streamlit
+COPY app/ ./app/
+
+# Port de Streamlit
+EXPOSE 8501
+
+# Démarrer l'interface
+CMD ["python", "-m", "streamlit", "run", "app/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
