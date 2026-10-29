@@ -139,7 +139,7 @@ Pour arrêter les services :
 docker compose down
 ```
 
-**Modèle entraîné :** l'API a besoin de `models/model.joblib` au démarrage. La procédure de génération du modèle doit être assurée par le `Dockerfile` de l'API (si le pipeline y est exécuté à la construction) ou réalisée avant le lancement de Docker si votre configuration utilise un modèle généré localement. Vérifiez le comportement du `Dockerfile` de votre dépôt ; l'absence du modèle empêche l'API de démarrer.
+**Modèle entraîné :** l'API a besoin de `models/model.joblib` au démarrage. Le `Dockerfile` de l'API exécute automatiquement le nettoyage, la préparation des variables et l'entraînement pendant la construction de l'image (`docker compose up --build`). Il n'est donc pas nécessaire de lancer le pipeline avant Docker : le modèle est généré à l'intérieur du conteneur à partir du CSV d'origine (`data/raw/`).
 
 ### Option B — Exécution en local (développement)
 
