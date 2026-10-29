@@ -150,10 +150,10 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-Installer également les dépendances de l'interface Streamlit si elles sont définies dans un fichier dédié. À défaut, vérifier que `streamlit` et `requests` sont présents dans l'environnement local :
+Installer également les dépendances de l'interface Streamlit, définies dans le fichier `requirements.streamlit.txt` :
 
 ```bash
-python -m pip install streamlit requests
+python -m pip install -r requirements.streamlit.txt
 ```
 
 **3. Générer les données traitées et le modèle**
