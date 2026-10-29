@@ -15,7 +15,26 @@ Le projet utilise le jeu de données public **Telco Customer Churn**.
 - **11 variables** sont utilisées pour la prédiction finale.
 
 Les données comprennent des informations sur le profil des clients, leur ancienneté, leurs abonnements, leurs services et leur facturation.
+### Variables utilisées par le modèle
 
+Le modèle reçoit **11 variables** :
+
+| Type | Variables |
+|---|---|
+| Numériques | `tenure`, `MonthlyCharges` |
+| Indices de services | `Security_Index` (0 à 4), `Streaming_Pack` (0 à 2) |
+| Catégorielles | `SeniorCitizen`, `Partner`, `Dependents`, `PaperlessBilling`, `InternetService`, `Contract`, `PaymentMethod` |
+
+**Variables retirées** (sans perte de qualité, validé par validation croisée) :
+
+- `gender` : aucun lien avec le churn ;
+- `TotalCharges` : quasiment égale à `tenure × MonthlyCharges`, donc redondante ;
+- `PhoneService` et `MultipleLines` : très peu liées au churn et redondantes entre elles.
+
+**Services regroupés** : les six services Internet sont résumés en deux indices, ce qui réduit le formulaire de 15 à 11 champs :
+
+- `Security_Index` : nombre de services souscrits parmi `OnlineSecurity`, `OnlineBackup`, `DeviceProtection` et `TechSupport` ;
+- `Streaming_Pack` : nombre de services souscrits parmi `StreamingTV` et `StreamingMovies`.
 ## Architecture MLOps
 
 Le projet repose sur les composants suivants :
