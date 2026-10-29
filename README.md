@@ -303,6 +303,18 @@ projet-mlops/
 
 Les données traitées et les fichiers du modèle sont générés par le pipeline et ne sont normalement pas versionnés.
 
+### Notebooks
+
+Les notebooks documentent l'analyse et justifient les choix appliqués dans `src/` :
+
+| Notebook | Contenu |
+|---|---|
+| `01_eda_and_cleaning` | Exploration initiale, qualité des données, nettoyage et premiers constats |
+| `02_eda_variable_selection` | Lien de chaque variable avec le churn (V de Cramér, information mutuelle) et repérage des variables redondantes |
+| `03_validation_selection_variables` | Validation croisée du retrait de quatre variables (19 → 15) |
+| `04_regroupement_services_internet` | Regroupement des six services Internet en deux indices (15 → 11 champs) |
+| `05_optimisation_seuil` | Choix du seuil de décision : comparaison de critères, stabilité et calibration |
+
 ## Limites et perspectives
 
 - Utilisation d'un jeu de données public et statique.
