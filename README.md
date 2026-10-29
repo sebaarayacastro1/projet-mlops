@@ -208,7 +208,23 @@ Pour utiliser un autre seuil, définir `CHURN_THRESHOLD` dans l'environnement (o
 CHURN_THRESHOLD=0.34
 ```
 
-En local, définir cette variable **avant de démarrer** FastAPI. Sans configuration particulière, le seuil `0.5` reste utilisé.
+En local, définir cette variable **avant de démarrer** FastAPI, dans le même terminal.
+
+Sous Windows (PowerShell) :
+
+```powershell
+$env:CHURN_THRESHOLD="0.34"
+```
+
+Sous Linux / macOS :
+
+```bash
+export CHURN_THRESHOLD=0.34
+```
+
+Sans configuration particulière, le seuil `0.5` reste utilisé.
+
+**Pourquoi 0,34 ?** Ce seuil est étudié dans le notebook `05_optimisation_seuil`. Il détecte davantage de clients qui partent (rappel d'environ 0,91 contre 0,79), mais génère plus de fausses alertes. Il n'est intéressant que si perdre un client coûte plus de 3 à 4 fois plus cher qu'une offre de rétention.
 
 ## Tests et intégration continue
 
