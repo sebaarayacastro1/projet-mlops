@@ -248,26 +248,37 @@ Le workflow GitHub Actions exécute des contrôles lors des modifications des br
 
 ```text
 projet-mlops/
-├── api/
-│   └── main.py
-├── app/
-│   └── streamlit_app.py
-├── data/
-│   ├── raw/
-│   └── processed/
-├── models/
-├── notebooks/
-├── src/
-│   ├── data/
-│   ├── features/
-│   ├── models/
-│   └── pipelines/
-├── tests/
 ├── .github/workflows/
-├── Dockerfile
-├── Dockerfile.streamlit
+│   └── ci.yml                      # intégration continue (GitHub Actions)
+├── api/
+│   └── main.py                     # API FastAPI
+├── app/
+│   └── streamlit_app.py            # interface web
+├── data/
+│   ├── raw/                        # CSV d'origine (versionné)
+│   └── processed/                  # données nettoyées et partitions (générées)
+├── models/                         # preprocessor.joblib et model.joblib (générés)
+├── notebooks/
+│   ├── 01_eda_and_cleaning.ipynb
+│   ├── 02_eda_variable_selection.ipynb
+│   ├── 03_validation_selection_variables.ipynb
+│   ├── 04_regroupement_services_internet.ipynb
+│   └── 05_optimisation_seuil.ipynb
+├── src/
+│   ├── data/clean_data.py          # nettoyage
+│   ├── features/regroupement.py    # indices de services
+│   ├── features/build_features.py  # préparation des variables et partition
+│   ├── models/train.py             # entraînement et suivi MLflow
+│   └── pipelines/run_pipeline.py   # exécution complète du pipeline
+├── tests/                          # tests automatisés (pytest)
+├── .dockerignore
+├── .gitignore
+├── Dockerfile                      # image de l'API
+├── Dockerfile.streamlit            # image de l'interface
 ├── docker-compose.yml
+├── pytest.ini
 ├── requirements.txt
+├── requirements.streamlit.txt
 └── README.md
 ```
 
