@@ -15,7 +15,26 @@ Le projet utilise le jeu de données public **Telco Customer Churn**.
 - **11 variables** sont utilisées pour la prédiction finale.
 
 Les données comprennent des informations sur le profil des clients, leur ancienneté, leurs abonnements, leurs services et leur facturation.
+### Variables utilisées par le modèle
 
+Le modèle reçoit **11 variables** :
+
+| Type | Variables |
+|---|---|
+| Numériques | `tenure`, `MonthlyCharges` |
+| Indices de services | `Security_Index` (0 à 4), `Streaming_Pack` (0 à 2) |
+| Catégorielles | `SeniorCitizen`, `Partner`, `Dependents`, `PaperlessBilling`, `InternetService`, `Contract`, `PaymentMethod` |
+
+**Variables retirées** (sans perte de qualité, validé par validation croisée) :
+
+- `gender` : aucun lien avec le churn ;
+- `TotalCharges` : quasiment égale à `tenure × MonthlyCharges`, donc redondante ;
+- `PhoneService` et `MultipleLines` : très peu liées au churn et redondantes entre elles.
+
+**Services regroupés** : les six services Internet sont résumés en deux indices, ce qui réduit le formulaire de 15 à 11 champs :
+
+- `Security_Index` : nombre de services souscrits parmi `OnlineSecurity`, `OnlineBackup`, `DeviceProtection` et `TechSupport` ;
+- `Streaming_Pack` : nombre de services souscrits parmi `StreamingTV` et `StreamingMovies`.
 ## Architecture MLOps
 
 Le projet repose sur les composants suivants :
@@ -120,7 +139,7 @@ Pour arrêter les services :
 docker compose down
 ```
 
-**Modèle entraîné :** l'API a besoin de `models/model.joblib` au démarrage. La procédure de génération du modèle doit être assurée par le `Dockerfile` de l'API (si le pipeline y est exécuté à la construction) ou réalisée avant le lancement de Docker si votre configuration utilise un modèle généré localement. Vérifiez le comportement du `Dockerfile` de votre dépôt ; l'absence du modèle empêche l'API de démarrer.
+**Modèle entraîné :** l'API a besoin de `models/model.joblib` au démarrage. Le `Dockerfile` de l'API exécute automatiquement le nettoyage, la préparation des variables et l'entraînement pendant la construction de l'image (`docker compose up --build`). Il n'est donc pas nécessaire de lancer le pipeline avant Docker : le modèle est généré à l'intérieur du conteneur à partir du CSV d'origine (`data/raw/`).
 
 ### Option B — Exécution en local (développement)
 
@@ -150,10 +169,10 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-Installer également les dépendances de l'interface Streamlit si elles sont définies dans un fichier dédié. À défaut, vérifier que `streamlit` et `requests` sont présents dans l'environnement local :
+Installer également les dépendances de l'interface Streamlit, définies dans le fichier `requirements.streamlit.txt` :
 
 ```bash
-python -m pip install streamlit requests
+python -m pip install -r requirements.streamlit.txt
 ```
 
 **3. Générer les données traitées et le modèle**
@@ -208,7 +227,23 @@ Pour utiliser un autre seuil, définir `CHURN_THRESHOLD` dans l'environnement (o
 CHURN_THRESHOLD=0.34
 ```
 
-En local, définir cette variable **avant de démarrer** FastAPI. Sans configuration particulière, le seuil `0.5` reste utilisé.
+En local, définir cette variable **avant de démarrer** FastAPI, dans le même terminal.
+
+Sous Windows (PowerShell) :
+
+```powershell
+$env:CHURN_THRESHOLD="0.34"
+```
+
+Sous Linux / macOS :
+
+```bash
+export CHURN_THRESHOLD=0.34
+```
+
+Sans configuration particulière, le seuil `0.5` reste utilisé.
+
+**Pourquoi 0,34 ?** Ce seuil est étudié dans le notebook `05_optimisation_seuil`. Il détecte davantage de clients qui partent (rappel d'environ 0,91 contre 0,79), mais génère plus de fausses alertes. Il n'est intéressant que si perdre un client coûte plus de 3 à 4 fois plus cher qu'une offre de rétention.
 
 ## Tests et intégration continue
 
@@ -232,30 +267,53 @@ Le workflow GitHub Actions exécute des contrôles lors des modifications des br
 
 ```text
 projet-mlops/
-├── api/
-│   └── main.py
-├── app/
-│   └── streamlit_app.py
-├── data/
-│   ├── raw/
-│   └── processed/
-├── models/
-├── notebooks/
-├── src/
-│   ├── data/
-│   ├── features/
-│   ├── models/
-│   └── pipelines/
-├── tests/
 ├── .github/workflows/
-├── Dockerfile
-├── Dockerfile.streamlit
+│   └── ci.yml                      # intégration continue (GitHub Actions)
+├── api/
+│   └── main.py                     # API FastAPI
+├── app/
+│   └── streamlit_app.py            # interface web
+├── data/
+│   ├── raw/                        # CSV d'origine (versionné)
+│   └── processed/                  # données nettoyées et partitions (générées)
+├── models/                         # preprocessor.joblib et model.joblib (générés)
+├── notebooks/
+│   ├── 01_eda_and_cleaning.ipynb
+│   ├── 02_eda_variable_selection.ipynb
+│   ├── 03_validation_selection_variables.ipynb
+│   ├── 04_regroupement_services_internet.ipynb
+│   └── 05_optimisation_seuil.ipynb
+├── src/
+│   ├── data/clean_data.py          # nettoyage
+│   ├── features/regroupement.py    # indices de services
+│   ├── features/build_features.py  # préparation des variables et partition
+│   ├── models/train.py             # entraînement et suivi MLflow
+│   └── pipelines/run_pipeline.py   # exécution complète du pipeline
+├── tests/                          # tests automatisés (pytest)
+├── .dockerignore
+├── .gitignore
+├── Dockerfile                      # image de l'API
+├── Dockerfile.streamlit            # image de l'interface
 ├── docker-compose.yml
+├── pytest.ini
 ├── requirements.txt
+├── requirements.streamlit.txt
 └── README.md
 ```
 
 Les données traitées et les fichiers du modèle sont générés par le pipeline et ne sont normalement pas versionnés.
+
+### Notebooks
+
+Les notebooks documentent l'analyse et justifient les choix appliqués dans `src/` :
+
+| Notebook | Contenu |
+|---|---|
+| `01_eda_and_cleaning` | Exploration initiale, qualité des données, nettoyage et premiers constats |
+| `02_eda_variable_selection` | Lien de chaque variable avec le churn (V de Cramér, information mutuelle) et repérage des variables redondantes |
+| `03_validation_selection_variables` | Validation croisée du retrait de quatre variables (19 → 15) |
+| `04_regroupement_services_internet` | Regroupement des six services Internet en deux indices (15 → 11 champs) |
+| `05_optimisation_seuil` | Choix du seuil de décision : comparaison de critères, stabilité et calibration |
 
 ## Limites et perspectives
 
